@@ -33,7 +33,12 @@
 
 - (void)awakeFromNib
 {
-    [self _setDefaultValues];
+	[self _setDefaultValues];
+}
+
+- (BOOL)preservesContentDuringLiveResize
+{
+    return NO;
 }
 
 - (void) _setDefaultValues
@@ -43,12 +48,15 @@
 
 	// Make border and background look like the box found in "iSync conflict"
 	[self setFillColor:[NSColor colorWithCalibratedWhite:0.965 alpha:1.000]];	
-	[self setBorderColor:[NSColor colorWithCalibratedRed:0.819 green:0.773 blue:0.813 alpha:1.000]];
+	[self setBorderColor:[NSColor colorWithCalibratedRed:0.819 green:0.773 
+													blue:0.813 alpha:1.000]];
 	
 	// Color of the inner border
-	self.selectedBorderColor = [NSColor colorWithCalibratedRed:0.192 green:0.417 blue:0.884 alpha:1.000];
+	self.selectedBorderColor = [NSColor colorWithCalibratedRed:0.192 green:0.417 
+														  blue:0.884 alpha:1.000];
 	// Color of the inner background
-	self.selectedBgColor = [NSColor colorWithCalibratedRed:0.769 green:0.847 blue:0.950 alpha:1.000];
+	self.selectedBgColor = [NSColor colorWithCalibratedRed:0.769 green:0.847 
+													  blue:0.950 alpha:1.000];
 	// By default, this box is not part of any radio group
 	self.radioGroup = [NSNumber numberWithInt:-1];
 	
@@ -80,7 +88,8 @@
 
 - (void) _notifyRadioGroup
 {
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self.radioGroup forKey:@"radioGroup"];
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:self.radioGroup 
+														 forKey:@"radioGroup"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:DZSelectableBoxNotification
 														object:self
 													  userInfo:userInfo];
@@ -102,12 +111,12 @@
 }
 
 - (void)drawRect:(NSRect)dirtyRect
-{	
+{		
 	[super drawRect:dirtyRect];
 
 	if (selected) {
 		NSTitlePosition titlePos;
-		NSRect bgRect = dirtyRect;
+		NSRect bgRect = [self bounds];
 		
 		if ((titlePos = [self titlePosition]) != NSNoTitle) {
 			NSRect titleRect = [self titleRect];
@@ -133,13 +142,16 @@
 		} else {
 			bgRect = NSInsetRect(bgRect, 4, 4);
 		}
+
 		
-		NSBezierPath *bgPath = [NSBezierPath bezierPathWithRoundedRect:bgRect xRadius:_radius yRadius:_radius];
+		NSBezierPath *bgPath = [NSBezierPath bezierPathWithRoundedRect:bgRect 
+															   xRadius:_radius 
+															   yRadius:_radius];
 		[selectedBgColor set];
 		[bgPath fill];		
 		[selectedBorderColor set];
 		[bgPath setLineWidth:2.0];
-		[bgPath stroke];
+		[bgPath stroke];		
 	}
 }
 
